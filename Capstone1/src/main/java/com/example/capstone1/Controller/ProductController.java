@@ -49,37 +49,13 @@ public class ProductController {
        return ResponseEntity.status(400).body(new ApiResponse("ID not found"));
    }
 
-    //Extra endpoint 1 User can add review on the product
-   @PostMapping("/addReview/{productId}/{rating}")
-public ResponseEntity addReview(@PathVariable String productId, @PathVariable int rating,@RequestBody String comment) {
-    String result = productService.addReview(productId, rating, comment);
-    if (result.equals("true")) {
-        return ResponseEntity.status(200).body(new ApiResponse("Review added successfully."));
-    }
-    if (result.equals("invalid rating")) {
-        return ResponseEntity.status(400).body(new ApiResponse("invalid rating"));
-    }if(result.equals("User not found")){
-        return ResponseEntity.status(400).body(new ApiResponse("User not found"));
+    //5 Extra Method to get bestseller products based on number of sell
+    @GetMapping("/bestSeller/{numberOfSell}")
+public ResponseEntity bestSeller(@PathVariable int numberOfSell){
+       if(productService.bestSeller(numberOfSell)==null){
+           return ResponseEntity.status(400).body(new ApiResponse("There are no products purchased yet."));
        }
-    return ResponseEntity.status(400).body(new ApiResponse("product id not found"));
-
+       return ResponseEntity.status(200).body(productService.bestSeller(numberOfSell));
 }
-    //1 extra endpoint for {bounce}
-@GetMapping("/getReview")
-public ResponseEntity getReview(){
-       return ResponseEntity.status(200).body(productService.getReviews());
-}
-
-    //Extra endpoint 2 Calculate Average rating on tha product
-@GetMapping("/CalculateAvgRating/{productId}")
-public ResponseEntity CalculateAvgRating(@PathVariable String productId){
-       if(productService.CalculateAvgRating(productId)==0){
-           return ResponseEntity.status(400).body(new ApiResponse("Review not found"));
-       }
-       return ResponseEntity.status(200).body(new ApiResponse("Average rating= "+productService.CalculateAvgRating(productId)));
-
-}
-
-
 
 }//end class

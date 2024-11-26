@@ -28,6 +28,6 @@ public class User {
     @NotNull(message = "Empty balance")
     @Positive(message = "Balance should be more than 0")
     private double balance;
-    //private ArrayList<Product> wishList = new ArrayList<>();
+    private ArrayList<Product> orders = new ArrayList<>();
 }
 

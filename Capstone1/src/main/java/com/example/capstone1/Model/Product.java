@@ -4,6 +4,8 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.ArrayList;
+
 @Data
 @AllArgsConstructor
 public class Product {
@@ -21,6 +23,10 @@ public class Product {
     @NotEmpty(message = "Empty status")
     @Pattern(regexp = "Refundable|Non-refundable")
     private String status ;
-    private boolean Sold =false;
-
+    @Max(value = 5,message = "Rating should be less than 5")
+    @PositiveOrZero(message = "Rating should be zero or positive")
+    private double rating=0;
+    private ArrayList<String> reviews = new ArrayList<>();
+    @PositiveOrZero
+    private int countOfSell=0;
 }

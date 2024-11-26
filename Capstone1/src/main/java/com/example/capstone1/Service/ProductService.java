@@ -13,7 +13,6 @@ import java.util.ArrayList;
 public class ProductService {
    private final CategoryService categoryService ;
     ArrayList<Product> products =new ArrayList<>();
-    ArrayList<String> reviews =new ArrayList<>();
 
 
     public ArrayList<Product> getProducts(){
@@ -49,47 +48,35 @@ public class ProductService {
         }
         return false;
     }
-//Extra endpoint 1 User can add review on the product
-    public String addReview(String productId, int rating, String comment) {
-        if (rating < 1 || rating > 5) {
-            return "invalid rating";
-        }
-        for (Product p : products) {
-            if (p.getId().equals(productId)) {
-                String review = String.format("Product: %s | Rating: %d | Comment: %s", productId, rating, comment);
-                reviews.add(review);
-                return "true";
 
-            }
-        }return "product id not found";
-    }
+    //5 Extra Method to get bestseller products based on number of sell
+    public ArrayList<Product> bestSeller(int numberOfProduct) {
+        // Create a copy of the products list
+        ArrayList<Product> sortedProducts = new ArrayList<>(products);
 
-    //1 extra endpoint for {bounce}
-    public ArrayList<String> getReviews(){
-        return reviews;
-    }
-
-
-    //Extra endpoint 2 Calculate Average rating on tha product
-    public double CalculateAvgRating(String productId){
-        int totalRating=0;
-        int count=0;
-
-        for(String review: reviews){
-            if(review.contains("Product: "+productId)){
-                String [] review_parts =review.split("\\|");
-                int rating =Integer.parseInt(review_parts[1].trim().split(": ")[1]);
-                totalRating=totalRating+rating;
-                count++;
+//perform sorted array of product
+        for (int i = 0; i < sortedProducts.size() - 1; i++) {
+            for (int j = i + 1; j < sortedProducts.size(); j++) {
+                if (sortedProducts.get(i).getCountOfSell() < sortedProducts.get(j).getCountOfSell()) {
+                    // Swap the products
+                    Product temp = sortedProducts.get(i);
+                    sortedProducts.set(i, sortedProducts.get(j));
+                    sortedProducts.set(j, temp);
+                }
             }
         }
-        if(count==0.0){
-            return 0.0;
+
+        // Prepare the result list with a limit
+        ArrayList<Product> result = new ArrayList<>();
+        for (int i = 0; i < Math.min(numberOfProduct, sortedProducts.size()); i++) {
+            result.add(sortedProducts.get(i));
         }
-        return (double) totalRating/count;
 
+        if(result.isEmpty()){
+           return null;
+        }
+        return result;
     }
-
 
 
 
